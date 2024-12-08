@@ -71,5 +71,45 @@ This application uses Docker Compose to manage multiple containers:
 
 To run both containers, navigate to the project directory and execute:
 ```
-docker-compose up --build  
+docker-compose up --build
 ```
+
+## Docker Compose Setup
+
+The `docker-compose.yml` file defines two services:
+- `app`: The Flask application service
+  - Built from the Dockerfile in the current directory
+  - Maps port 5000 to host port 5000
+  - Depends on RabbitMQ service
+  - Environment variables configured for RabbitMQ connection
+
+- `rabbitmq`: The RabbitMQ message broker service
+  - Uses official RabbitMQ 3-management image
+  - Maps ports 5672 (AMQP) and 15672 (Management UI)
+  - Persists data using named volume
+
+## Demo
+
+The first gif demonstrates the process of starting the application using Docker Compose, which launches both the Flask application and RabbitMQ containers.
+
+![alt text](intro.gif)
+
+The second gif demonstrates Task One's producer-consumer pattern implementation using multi-threading. It shows how random integers are safely produced and consumed using a shared queue with thread synchronization. You can check the terminal to see the generated numbers in real-time, and the final produced and consumed items will be displayed on the webpage as JSON response.
+
+![alt text](one.gif)
+
+The third gif demonstrates Task Two's basic queue implementation using RabbitMQ. It shows a simple message queue where a single message "Hello, World!" is sent to a queue and then consumed by a receiver. The terminal output displays both the sending and receiving of the message, demonstrating the message queue pattern in action.
+
+![alt text](two.gif)
+
+The fourth gif demonstrates Task Two's work queue implementation using RabbitMQ. Unlike the basic queue which sends a single message, the work queue distributes multiple tasks (Task 1 through Task 5) among available workers. This implementation ensures fair dispatch of work, with the round-robin distribution ensuring no worker is overwhelmed. The messages are also made persistent to prevent loss in case of RabbitMQ server crashes. The terminal output shows both the sending of tasks to the queue and their reception by workers, with each worker processing one task at a time.
+
+![alt text](three.gif)
+
+The fifth gif demonstrates Task Two's publish/subscribe (pub/sub) pattern implementation using RabbitMQ. In this pattern, messages are broadcast to multiple subscribers rather than being processed by a single consumer. The publisher sends messages to an exchange, which then distributes them to all bound queues. Each subscriber creates an exclusive queue that is bound to the exchange, allowing them to receive all published messages. This demonstrates how a single message can be delivered to multiple recipients simultaneously, which is useful for scenarios like broadcasting updates or notifications to multiple parts of a system.
+
+![alt text](four.gif)
+
+The sixth gif demonstrates Task Three's greeting endpoint implementation. This simple REST API endpoint accepts GET requests and provides personalized greetings. When accessed without any parameters (GET `/v1/greet`), it returns a default greeting "Hello, World!". When provided with a name parameter (GET `/v1/greet?name=snr`), it returns a personalized greeting "Hello, snr!". The response is formatted as JSON, making it easy to integrate with other applications. The terminal output shows the logging of each request, while the webpage displays the JSON response containing the greeting message.
+
+![alt text](fifth.gif)
